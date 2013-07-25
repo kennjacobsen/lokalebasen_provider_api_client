@@ -94,6 +94,19 @@ module LokalebasenApi
       check_response(response)
     end
 
+    # Creates a prospectus create background job on the specified location
+    # @return [Map] created job
+    def create_prospectus(prospectus_url, prospectus_ext_key, location_ext_key)
+      loc = location_res(location_ext_key).location
+      rel = add_method(loc.rels[:prospectuses], :post)
+      response = rel.post(prospectus_data(prospectus_ext_key, prospectus_url))
+      check_response(response)
+      puts response.inspect
+      res = response.data.job.to_hash
+      res[:url] = response.data.job.rels[:self].href_template
+      Map.new(res)
+    end
+
     # Creates a floorplan create background job on the specified location
     # @return [Map] created job
     def create_floorplan(floorplan_url, floorplan_ext_key, location_ext_key)
@@ -210,6 +223,15 @@ module LokalebasenApi
           floor_plan: {
             external_key: floorplan_ext_key,
             url: floorplan_url
+          }
+        }
+      end
+
+      def prospectus_data(prospectus_ext_key, prospectus_url)
+        {
+          prospectus: {
+            external_key: prospectus_ext_key,
+            url: prospectus_url
           }
         }
       end

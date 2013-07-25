@@ -107,6 +107,16 @@ module LokalebasenApi
       Map.new(res)
     end
 
+    # Deletes specified floorplan
+    # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
+    # @return [void]
+    def delete_prospectus(prospectus_ext_key, location_ext_key)
+      rel = prospectus(prospectus_ext_key, location_ext_key).rels[:self]
+      add_method(rel, :delete)
+      response = rel.delete
+      check_response(response)
+    end
+
     # Creates a floorplan create background job on the specified location
     # @return [Map] created job
     def create_floorplan(floorplan_url, floorplan_ext_key, location_ext_key)
@@ -168,6 +178,13 @@ module LokalebasenApi
         check_response(root)
         locations_rel = root.data.rels[:locations]
         locations_rel.get
+      end
+
+      def prospectus(prospectus_ext_key, location_ext_key)
+        loc = location_res(location_ext_key)
+        prospectus = loc.location.prospectus if loc.location.respond_to?(:prospectus) && loc.location.prospectus.external_key == prospectus_ext_key
+        raise NotFoundException.new("Prospectus with external_key '#{prospectus_ext_key}', not found!") if prospectus.nil?
+        prospectus
       end
 
       def floorplan(floorplan_ext_key, location_ext_key)

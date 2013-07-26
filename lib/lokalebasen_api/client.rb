@@ -101,7 +101,6 @@ module LokalebasenApi
       rel = add_method(loc.rels[:prospectuses], :post)
       response = rel.post(prospectus_data(prospectus_ext_key, prospectus_url))
       check_response(response)
-      puts response.inspect
       res = response.data.job.to_hash
       res[:url] = response.data.job.rels[:self].href_template
       Map.new(res)

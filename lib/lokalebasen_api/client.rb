@@ -106,8 +106,8 @@ module LokalebasenApi
       Map.new(res)
     end
 
-    # Deletes specified floorplan
-    # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
+    # Deletes specified Prospectus
+    # @raise [RuntimeError] if Prospectus not found, e.g. "Prospectus with external_key 'PROSPECTUS_EXT_KEY', not found!"
     # @return [void]
     def delete_prospectus(prospectus_ext_key, location_ext_key)
       rel = prospectus(prospectus_ext_key, location_ext_key).rels[:self]

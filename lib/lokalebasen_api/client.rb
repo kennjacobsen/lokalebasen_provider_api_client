@@ -25,7 +25,7 @@ module LokalebasenApi
 
     # Returns specified location for the current provider
     # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
-    # @raise [RuntimeError] if location not found, e.g. "Location with external_key 'LOC_EXT_KEY', not found!"
+    # @raise [NotFoundException] if location not found, e.g. "Location with external_key 'LOC_EXT_KEY', not found!"
     # @return [Map] location
     def location(location_ext_key)
       loc = location_res(location_ext_key)
@@ -85,7 +85,7 @@ module LokalebasenApi
     end
 
     # Deletes specified photo
-    # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
+    # @raise [NotFoundException] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
     # @return [void]
     def delete_photo(photo_ext_key, location_ext_key)
       rel = photo(photo_ext_key, location_ext_key).rels[:self]
@@ -107,7 +107,7 @@ module LokalebasenApi
     end
 
     # Deletes specified Prospectus
-    # @raise [RuntimeError] if Prospectus not found, e.g. "Prospectus with external_key 'PROSPECTUS_EXT_KEY', not found!"
+    # @raise [NotFoundException] if Prospectus not found, e.g. "Prospectus with external_key 'PROSPECTUS_EXT_KEY', not found!"
     # @return [void]
     def delete_prospectus(prospectus_ext_key, location_ext_key)
       rel = prospectus(prospectus_ext_key, location_ext_key).rels[:self]
@@ -129,7 +129,7 @@ module LokalebasenApi
     end
 
     # Deletes specified floorplan
-    # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
+    # @raise [NotFoundException] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
     # @return [void]
     def delete_floorplan(floorplan_ext_key, location_ext_key)
       rel = floorplan(floorplan_ext_key, location_ext_key).rels[:self]

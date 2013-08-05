@@ -1,17 +1,30 @@
+# encoding: utf-8
 require 'spec_helper'
 require 'securerandom'
 
 describe LokalebasenApi do
 
+
+
   # let(:service_url) { "http://localhost:3000/api/provider/locations.json" }
   # let(:service_url) { "http://staging.lokalbasen.se/api/provider/locations.json" }
-  let(:service_url) { "http://staging.lokalebasen.dk/api/provider/locations.json" }
+  let(:service_url) { "http://staging.lokalebasen.dk/api/provider/root.json" }
   # let(:service_url) { "http://localhost:3000/api/provider" }
   let(:api_key) { "356d8acb815865941b5d9515ef00a84f0c14d2b1" } # staging api_key for Kungsleden
   # let(:api_key) { "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" } # localhost api_key for Jeudan
 
-  let(:ext_key) { "39PQ32KUC6BSC3AS" }
+  let(:ext_key) { "TEST_KEY" }
+  let(:asset_ext_key) { "ASSET_KEY" }
+  let(:ok_status) {  double(status: 200) }
+  let(:delete_ok) {  double(delete: ok_status) }
+  let(:rest_ok) {  double(delete: ok_status, post: ok_status, put: ok_status, get: ok_status) }
+  let(:location) { double(external_key: ext_key, rels: {self: double}  ) }
+  let(:location_res) { double(location: location) }
+
+  let(:error_status) {  double(status: 400, data: double(message: "SOME 400 ERROR")) }
   let(:ext_key_non_existing) { "40PQ32KUC6BSC3XR" }
+  let(:prospectus_url){ "http://www.lokalebasen-uploads.dk/artikler/2013_06_10_alectia_indretning/slides.pdf" }
+  let(:prospectus_ext_key){ "PROSPECTUS_EXT_KEY" }
   let(:client) { LokalebasenApi.client({:api_key => api_key}, service_url) }
 
   let(:location_test) {
@@ -41,6 +54,29 @@ describe LokalebasenApi do
   }
 
   let(:locations) { [{external_key: "EXISTING_GUID"}] }
+
+  describe "#create_prospectus" do
+    it "returns state" do 
+      VCR.use_cassette('create_prospectus') do
+        resp = client.create_prospectus(prospectus_url, prospectus_ext_key, "TEST_KEY")
+        resp.should == {"state"=>"enqueued", "url"=>"http://staging.lokalebasen.dk/api/provider/asset_jobs/30900"}
+      end
+    end
+
+    it "url encoding" do
+      
+    end
+  end 
+
+  describe "#delete_prospectus" do
+    it "returns nil" do 
+      prospectus = double(external_key: asset_ext_key, rels: {self: delete_ok} )
+      location.stub(prospectus: prospectus)
+      client.stub(add_method: nil, location_res: location_res)
+      delete_ok.should_receive(:delete) # The test
+      client.delete_prospectus(asset_ext_key, ext_key).should be_nil
+    end
+  end
 
   it "returns true if location exist" do
     client.should_receive(:locations).and_return(locations)

@@ -98,10 +98,11 @@ describe LokalebasenApi do
   # end
 
   it "deletes floorplan" do
-    floorplan_ext_key = "9be69fdabf654aab5990d8e131c96f64"
-    VCR.use_cassette('delete_floorplan') do
-      resp = client.delete_floorplan(floorplan_ext_key, ext_key)
-    end
+    floor_plan = double(external_key: asset_ext_key, rels: {self: delete_ok} )
+    location.stub(floor_plans:[floor_plan])
+    client.stub(add_method: nil, location_res: location_res)
+    delete_ok.should_receive(:delete) # The test
+    client.delete_floorplan(asset_ext_key, ext_key).should be_nil
   end
 
   it "deletes photo" do

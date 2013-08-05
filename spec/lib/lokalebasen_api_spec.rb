@@ -106,17 +106,19 @@ describe LokalebasenApi do
   end
 
   it "deletes photo" do
-    photo_ext_key = "TEST_KEY10"
-    VCR.use_cassette('delete_photo') do
-      client.delete_photo(photo_ext_key, ext_key)
-    end
+    photo = double(external_key: asset_ext_key, rels: {self: delete_ok} )
+    location.stub(photos:[photo])
+    client.stub(add_method: nil, location_res: location_res)
+    delete_ok.should_receive(:delete) # The test
+    client.delete_photo(asset_ext_key, ext_key).should be_nil
   end
 
   it "fails when trying to delete photo with non_existing key" do
-    photo_ext_key = "SOME_NON_EXISTING_KEY"
-    VCR.use_cassette('delete_non_existing_photo') do
-      expect { client.delete_photo(photo_ext_key, ext_key) }.to raise_error LokalebasenApi::NotFoundException
-    end
+    ne_photo_ext_key = "SOME_NON_EXISTING_KEY"
+    photo = double(external_key: asset_ext_key, rels: {self: delete_ok} )
+    location.stub(photos:[photo])
+    client.stub(add_method: nil, location_res: location_res)
+    expect { client.delete_photo(ne_photo_ext_key, ext_key) }.to raise_error LokalebasenApi::NotFoundException
   end
 
   it "creates photo" do

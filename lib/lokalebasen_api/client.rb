@@ -65,6 +65,7 @@ module LokalebasenApi
     # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
     # @return [Map] location
     def deactivate(location_ext_key)
+      debug("deactivate: #{location_ext_key}")
       set_state(:deactivation, location_ext_key) if can_be_deactivated?(location_ext_key)
     end
 
@@ -72,6 +73,7 @@ module LokalebasenApi
     # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
     # @return [Map] location
     def activate(location_ext_key)
+      debug("activate: #{location_ext_key}")
       set_state(:activation, location_ext_key) if can_be_activated?(location_ext_key)
     end
 

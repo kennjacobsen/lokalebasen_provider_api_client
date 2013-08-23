@@ -4,6 +4,7 @@ require 'map'
 
 module LokalebasenApi
   class Client
+    attr_reader :logger
 
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
     # @param enable_logging [Boolean] specifies wether the client should log calls

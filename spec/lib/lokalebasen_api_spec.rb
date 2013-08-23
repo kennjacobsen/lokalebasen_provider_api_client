@@ -122,27 +122,27 @@ describe LokalebasenApi do
   end
 
   it "activates location" do
-    client.stub(can_be_activated?: true)
+    client.double(can_be_activated?: true)
     client.should_receive(:set_state).with(:activation, ext_key).and_return(nil)
     client.activate(ext_key)
   end
 
   it "doesn't activate location with no activation link" do
-    location = stub(rels: { deactivation: "LINK"} )
-    client.stub(location_res: stub(location: location))
+    location = double(rels: { deactivation: "LINK"} )
+    client.double(location_res: double(location: location))
     client.should_not_receive(:set_state).with(:activation, ext_key)
     client.activate(ext_key)
   end
 
   it "deactivates location" do
-    client.stub(can_be_deactivated?: true)
+    client.double(can_be_deactivated?: true)
     client.should_receive(:set_state).with(:deactivation, ext_key).and_return(nil)
     client.deactivate(ext_key)
   end
 
   it "doesn't deactivate location with no deactivation link" do
-    location = stub(rels: { activation: "LINK"} )
-    client.stub(location_res: stub(location: location))
+    location = double(rels: { activation: "LINK"} )
+    client.double(location_res: double(location: location))
     client.should_not_receive(:set_state).with(:deactivation, ext_key)
     client.deactivate(ext_key)
   end

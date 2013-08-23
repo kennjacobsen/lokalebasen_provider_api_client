@@ -8,10 +8,10 @@ module LokalebasenApi
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
     # @param enable_logging [Boolean] specifies wether the client should log calls
     # @param service_url [String] URL to root of service e.g. http://IP_ADDRESS:3000/api/provider
-    def initialize(credentials, enable_logging, service_url)
+    def initialize(credentials, service_url, logger = nil)
       @api_key = credentials[:api_key]
-      @enable_logging = enable_logging
       @service_url = service_url
+      @logger = logger
 
       raise "api_key required" if @api_key.nil?
       raise "service_url required" if @service_url.nil?
@@ -42,6 +42,7 @@ module LokalebasenApi
     # @param location [Hash] e.g. { :location => { :title => "" .. } }
     # @return [Map] created location
     def create_location(location)
+      debug("create_location: #{location.inspect}")
       locs = locations_res.data
       rel = add_method(locs.rels[:self], :post)
       response = rel.post(location)
@@ -51,6 +52,7 @@ module LokalebasenApi
 
     # @return [Map] updated location
     def update_location(location)
+      debug("update_location: #{location.inspect}")
       loc_res = location_res(location["location"]["external_key"]).location
       rel = add_method(loc_res.rels[:self], :put)
       response = rel.put(location)
@@ -262,6 +264,12 @@ module LokalebasenApi
 
       def service_url
         @service_url
+      end
+
+      def debug(message)
+        if logger
+          logger.debug("ProviderApiClient") { message }
+        end
       end
   end
 

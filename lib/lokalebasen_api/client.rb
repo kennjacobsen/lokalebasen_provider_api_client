@@ -8,9 +8,8 @@ module LokalebasenApi
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
     # @param enable_logging [Boolean] specifies wether the client should log calls
     # @param service_url [String] URL to root of service e.g. http://IP_ADDRESS:3000/api/provider
-    def initialize(credentials, enable_logging, service_url)
+    def initialize(credentials, service_url)
       @api_key = credentials[:api_key]
-      @enable_logging = enable_logging
       @service_url = service_url
 
       raise "api_key required" if @api_key.nil?

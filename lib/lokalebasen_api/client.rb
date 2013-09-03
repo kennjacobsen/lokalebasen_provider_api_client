@@ -137,6 +137,8 @@ module LokalebasenApi
       delete_resource(floorplan(floorplan_ext_key, location_ext_key))
     end
 
+    # Deletes specified resource
+    # @return [void]
     def delete_resource(resource)
       rel = resource.rels[:self]
       add_method(rel, :delete)

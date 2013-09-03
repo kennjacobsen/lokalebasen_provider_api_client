@@ -93,10 +93,7 @@ module LokalebasenApi
     # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
     # @return [void]
     def delete_photo(photo_ext_key, location_ext_key)
-      rel = photo(photo_ext_key, location_ext_key).rels[:self]
-      add_method(rel, :delete)
-      response = rel.delete
-      check_response(response)
+      delete_resource(photo(photo_ext_key, location_ext_key))
     end
 
     # Creates a prospectus create background job on the specified location
@@ -116,10 +113,7 @@ module LokalebasenApi
     # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
     # @return [void]
     def delete_prospectus(prospectus_ext_key, location_ext_key)
-      rel = prospectus(prospectus_ext_key, location_ext_key).rels[:self]
-      add_method(rel, :delete)
-      response = rel.delete
-      check_response(response)
+      delete_resource(prospectus(prospectus_ext_key, location_ext_key))
     end
 
     # Creates a floorplan create background job on the specified location
@@ -138,7 +132,11 @@ module LokalebasenApi
     # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
     # @return [void]
     def delete_floorplan(floorplan_ext_key, location_ext_key)
-      rel = floorplan(floorplan_ext_key, location_ext_key).rels[:self]
+      delete_resource(floorplan(floorplan_ext_key, location_ext_key))
+    end
+
+    def delete_resource(resource)
+      rel = resource.rels[:self]
       add_method(rel, :delete)
       response = rel.delete
       check_response(response)
@@ -262,7 +260,9 @@ module LokalebasenApi
         res =  Map.new(loc_res)
         res.floor_plans = res.floor_plans.map{|fp| fp.to_hash} if res.has?(:floor_plans)
         res.photos = res.photos.map{|p| p.to_hash} if res.has?(:photos)
-        Map.new(res.to_hash) # Minor hack
+        res = Map.new(res.to_hash) # Minor hack
+        res.resource = loc_res
+        res
       end
 
       def service_url

@@ -66,7 +66,8 @@ module LokalebasenApi
     # @return [Map] location
     def deactivate(location_ext_key)
       debug("deactivate: #{location_ext_key}")
-      set_state(:deactivation, location_ext_key) if can_be_deactivated?(location_ext_key)
+      response = set_state(:deactivation, location_res(location_ext_key).location) if can_be_deactivated?(location_ext_key)
+      location_res_to_map(response.data.location)
     end
 
     # Activates the specified location
@@ -74,7 +75,8 @@ module LokalebasenApi
     # @return [Map] location
     def activate(location_ext_key)
       debug("activate: #{location_ext_key}")
-      set_state(:activation, location_ext_key) if can_be_activated?(location_ext_key)
+      response = set_state(:activation, location_res(location_ext_key).location) if can_be_activated?(location_ext_key)
+      location_res_to_map(response.data.location)
     end
 
     # Creates a photo create background job on the specified location
@@ -140,6 +142,18 @@ module LokalebasenApi
       add_method(rel, :delete)
       response = rel.delete
       check_response(response)
+    end
+
+    # Sets state on the resource, by calling post on relation defined by relation_type
+    # E.g. set_state(:deactivation, location_resource) #=> location
+    # @param relation_type [Symbol] state e.g. :deactivation
+    # @param resource [Sawyer::Resource] the resource to set state on
+    # @return [Sawyer::Resource] response
+    def set_state(relation_type, resource)
+      relation = add_method(resource.rels[relation_type], :post)
+      response = relation.post
+      check_response(response)
+      response
     end
 
     private
@@ -219,14 +233,6 @@ module LokalebasenApi
           http.headers['Content-Type'] = 'application/json'
           http.headers['Api-Key'] = @api_key
         end
-      end
-
-      def set_state(rel, location_ext_key)
-        loc = location_res(location_ext_key).location
-        rel = add_method(loc.rels[rel], :post)
-        response = rel.post
-        check_response(response)
-        location_res_to_map(response.data.location)
       end
 
       def photo_data(photo_ext_key, photo_url)

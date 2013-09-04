@@ -66,7 +66,8 @@ module LokalebasenApi
     # @return [Map] location
     def deactivate(location_ext_key)
       debug("deactivate: #{location_ext_key}")
-      set_state(:deactivation, location_ext_key) if can_be_deactivated?(location_ext_key)
+      response = set_state(:deactivation, location_res(location_ext_key).location) if can_be_deactivated?(location_ext_key)
+      location_res_to_map(response.data.location)
     end
 
     # Activates the specified location
@@ -74,7 +75,8 @@ module LokalebasenApi
     # @return [Map] location
     def activate(location_ext_key)
       debug("activate: #{location_ext_key}")
-      set_state(:activation, location_ext_key) if can_be_activated?(location_ext_key)
+      response = set_state(:activation, location_res(location_ext_key).location) if can_be_activated?(location_ext_key)
+      location_res_to_map(response.data.location)
     end
 
     # Creates a photo create background job on the specified location
@@ -93,10 +95,7 @@ module LokalebasenApi
     # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
     # @return [void]
     def delete_photo(photo_ext_key, location_ext_key)
-      rel = photo(photo_ext_key, location_ext_key).rels[:self]
-      add_method(rel, :delete)
-      response = rel.delete
-      check_response(response)
+      delete_resource(photo(photo_ext_key, location_ext_key))
     end
 
     # Creates a prospectus create background job on the specified location
@@ -116,10 +115,7 @@ module LokalebasenApi
     # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
     # @return [void]
     def delete_prospectus(prospectus_ext_key, location_ext_key)
-      rel = prospectus(prospectus_ext_key, location_ext_key).rels[:self]
-      add_method(rel, :delete)
-      response = rel.delete
-      check_response(response)
+      delete_resource(prospectus(prospectus_ext_key, location_ext_key))
     end
 
     # Creates a floorplan create background job on the specified location
@@ -138,10 +134,28 @@ module LokalebasenApi
     # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
     # @return [void]
     def delete_floorplan(floorplan_ext_key, location_ext_key)
-      rel = floorplan(floorplan_ext_key, location_ext_key).rels[:self]
+      delete_resource(floorplan(floorplan_ext_key, location_ext_key))
+    end
+
+    # Deletes specified resource
+    # @return [void]
+    def delete_resource(resource)
+      rel = resource.rels[:self]
       add_method(rel, :delete)
       response = rel.delete
       check_response(response)
+    end
+
+    # Sets state on the resource, by calling post on relation defined by relation_type
+    # E.g. set_state(:deactivation, location_resource) #=> location
+    # @param relation_type [Symbol] state e.g. :deactivation
+    # @param resource [Sawyer::Resource] the resource to set state on
+    # @return [Sawyer::Resource] response
+    def set_state(relation_type, resource)
+      relation = add_method(resource.rels[relation_type], :post)
+      response = relation.post
+      check_response(response)
+      response
     end
 
     private
@@ -223,14 +237,6 @@ module LokalebasenApi
         end
       end
 
-      def set_state(rel, location_ext_key)
-        loc = location_res(location_ext_key).location
-        rel = add_method(loc.rels[rel], :post)
-        response = rel.post
-        check_response(response)
-        location_res_to_map(response.data.location)
-      end
-
       def photo_data(photo_ext_key, photo_url)
         {
           photo: {
@@ -262,7 +268,9 @@ module LokalebasenApi
         res =  Map.new(loc_res)
         res.floor_plans = res.floor_plans.map{|fp| fp.to_hash} if res.has?(:floor_plans)
         res.photos = res.photos.map{|p| p.to_hash} if res.has?(:photos)
-        Map.new(res.to_hash) # Minor hack
+        res = Map.new(res.to_hash) # Minor hack
+        res.resource = loc_res
+        res
       end
 
       def service_url

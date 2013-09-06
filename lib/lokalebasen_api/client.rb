@@ -202,21 +202,30 @@ module LokalebasenApi
       def prospectus(prospectus_ext_key, location_ext_key)
         loc = location_res(location_ext_key)
         prospectus = loc.location.prospectus if loc.location.respond_to?(:prospectus) && loc.location.prospectus.external_key == prospectus_ext_key
-        raise NotFoundException.new("Prospectus with external_key '#{prospectus_ext_key}', not found!") if prospectus.nil?
+        if prospectus.nil?
+          raise NotFoundException.new, "Prospectus with external_key "\
+            "'#{prospectus_ext_key}', not found on #{location_ext_key}!"
+        end
         prospectus
       end
 
       def floorplan(floorplan_ext_key, location_ext_key)
         loc = location_res(location_ext_key)
         floorplan = loc.location.floor_plans.detect{|floorplan| floorplan.external_key == floorplan_ext_key }
-        raise NotFoundException.new("Floorplan with external_key '#{floorplan_ext_key}', not found!") if floorplan.nil?
+        if floorplan.nil?
+          raise NotFoundException, "Floorplan with external_key "\
+            "'#{floorplan_ext_key}', not found on #{location_ext_key}!"
+        end
         floorplan
       end
 
       def photo(photo_ext_key, location_ext_key)
         loc = location_res(location_ext_key)
         photo = loc.location.photos.detect{|photo| photo.external_key == photo_ext_key }
-        raise NotFoundException.new("Photo with external_key '#{photo_ext_key}', not found!") if photo.nil?
+        if photo.nil?
+          raise NotFoundException, "Photo with external_key "\
+            "'#{photo_ext_key}', not found on #{location_ext_key}!"
+        end
         photo
       end
 

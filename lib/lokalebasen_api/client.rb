@@ -1,9 +1,11 @@
 require 'json'
 require 'sawyer'
 require 'map'
+require_relative 'contact_client'
 
 module LokalebasenApi
   class Client
+
     attr_reader :logger
 
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
@@ -22,6 +24,12 @@ module LokalebasenApi
     # @return [Array<Map>] all locations
     def locations
       locations_res.data.locations.map {|loc| location_res_to_map(loc)}
+    end
+
+    # Returns all contacts for the current provider
+    # @return [Array<Map>] all contacts
+    def contacts
+      contact_client.contacts
     end
 
     # Returns specified location for the current provider
@@ -159,6 +167,10 @@ module LokalebasenApi
     end
 
     private
+
+      def contact_client
+        @contact_client ||= LokalebasenApi::ContactClient.new(agent)
+      end
 
       def can_be_activated?(location_ext_key)
         loc = location_res(location_ext_key).location

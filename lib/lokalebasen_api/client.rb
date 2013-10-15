@@ -6,15 +6,16 @@ require_relative 'contact_client'
 module LokalebasenApi
   class Client
 
-    attr_reader :logger
+    attr_reader :logger, :agent
 
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
     # @param enable_logging [Boolean] specifies wether the client should log calls
     # @param service_url [String] URL to root of service e.g. http://IP_ADDRESS:3000/api/provider
-    def initialize(credentials, service_url, logger = nil)
+    def initialize(credentials, service_url, agent, logger = nil)
       @api_key = credentials[:api_key]
       @service_url = service_url
       @logger = logger
+      @agent = agent || default_agent
 
       raise "api_key required" if @api_key.nil?
       raise "service_url required" if @service_url.nil?
@@ -113,7 +114,6 @@ module LokalebasenApi
       rel = add_method(loc.rels[:prospectuses], :post)
       response = rel.post(prospectus_data(prospectus_ext_key, prospectus_url))
       check_response(response)
-      puts response.inspect
       res = response.data.job.to_hash
       res[:url] = response.data.job.rels[:self].href_template
       Map.new(res)
@@ -251,7 +251,7 @@ module LokalebasenApi
         relation
       end
 
-      def agent
+      def default_agent
         Sawyer::Agent.new(service_url) do |http|
           http.headers['Content-Type'] = 'application/json'
           http.headers['Api-Key'] = @api_key

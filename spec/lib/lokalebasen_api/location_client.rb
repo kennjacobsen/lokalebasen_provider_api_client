@@ -16,4 +16,11 @@ describe LokalebasenApi::LocationClient do
     LokalebasenApi::LocationClient.new(agent).locations.should == mapped_locations
   end
 
+  it "returns a mapped resource by external key" do
+    LokalebasenApi::Resource::Location.stub_chain(:new, :find_by_external_key)
+    mapped_location = double("MappedLocation")
+    LokalebasenApi::Mapper::Location.stub_chain(:new, :mapify).and_return(mapped_location)
+    LokalebasenApi::LocationClient.new(agent).
+      location("ext_key").should == mapped_location
+  end
 end

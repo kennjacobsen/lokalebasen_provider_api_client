@@ -8,7 +8,7 @@ module LokalebasenApi
   class Client
     extend Forwardable
 
-    def_delegators :location_client, :locations
+    def_delegators :location_client, :locations, :location
 
     attr_reader :logger, :agent
 
@@ -29,15 +29,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # Returns specified location for the current provider
-    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
-    # @raise [RuntimeError] if location not found, e.g. "Location with external_key 'LOC_EXT_KEY', not found!"
-    # @return [Map] location
-    def location(location_ext_key)
-      loc = location_res(location_ext_key)
-      location_res_to_map(loc.location)
     end
 
     # Returns true if locations having location_ext_key exists

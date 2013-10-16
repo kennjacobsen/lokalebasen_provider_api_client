@@ -29,12 +29,20 @@ module LokalebasenApi
         end
       end
 
+      def update(external_key, location_params)
+        update_response = location_resource_agent(external_key).rels[:self].put(location_params)
+        LokalebasenApi::ResponseChecker.check(update_response) do |response|
+          response.data.location
+        end
+      end
+
       private
 
       def location_resource_agent(external_key)
         detect_location_from(all, external_key) do |location|
           LokalebasenApi::ResponseChecker.check(location.rels[:self].get) do |response|
             resource = response.data.location
+            permit_http_method!(resource.rels[:self], :put)
             resource
           end
         end

@@ -61,4 +61,21 @@ describe LokalebasenApi::Resource::Location do
     location.to_hash.should include(params[:location])
     location.should be_an_instance_of(Sawyer::Resource)
   end
+
+  it "performs the correct requests on update" do
+    stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    stub_put(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    params = { :location => { :external_key => "location_ext_key"} }
+    location_resource.update("location_ext_key", params)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns a resource with location params on update" do
+    stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    stub_put(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    params = { :location => { :external_key => "location_ext_key"} }
+    location = location_resource.update("location_ext_key", params)
+    location.to_hash.should include(params[:location])
+    location.should be_an_instance_of(Sawyer::Resource)
+  end
 end

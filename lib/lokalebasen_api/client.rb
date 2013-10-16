@@ -12,10 +12,10 @@ module LokalebasenApi
     # @param enable_logging [Boolean] specifies wether the client should log calls
     # @param service_url [String] URL to root of service e.g. http://IP_ADDRESS:3000/api/provider
     def initialize(credentials, service_url, options = {})
-      @api_key = credentials[:api_key]
+      @api_key     = credentials[:api_key]
       @service_url = service_url
-      @logger = options.fetch(:logger) { nil }
-      @agent = options.fetch(:agent) { default_agent}
+      @logger      = options.fetch(:logger) { nil }
+      @agent       = options.fetch(:agent) { default_agent}
 
       raise "api_key required" if @api_key.nil?
       raise "service_url required" if @service_url.nil?

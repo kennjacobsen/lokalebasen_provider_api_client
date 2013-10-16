@@ -24,6 +24,13 @@ module LokalebasenApi
       ).mapify
     end
 
+    # Returns true if locations having location_ext_key exists
+    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
+    # @return [Boolean] exists?
+    def exists?(location_ext_key)
+      location_resource.exists?(location_ext_key)
+    end
+
     private
 
     def location_resource

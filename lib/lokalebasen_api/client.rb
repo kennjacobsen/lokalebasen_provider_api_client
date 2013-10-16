@@ -8,7 +8,7 @@ module LokalebasenApi
   class Client
     extend Forwardable
 
-    def_delegators :location_client, :locations, :location
+    def_delegators :location_client, :locations, :location, :exists?
 
     attr_reader :logger, :agent
 
@@ -29,13 +29,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # Returns true if locations having location_ext_key exists
-    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
-    # @return [Boolean] exists?
-    def exists?(location_ext_key)
-      locations.any?{ |location| location[:external_key] == location_ext_key }
     end
 
     # @param location [Hash] e.g. { :location => { :title => "" .. } }

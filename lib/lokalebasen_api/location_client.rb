@@ -31,6 +31,14 @@ module LokalebasenApi
       location_resource.exists?(location_ext_key)
     end
 
+    # @param location [Hash] e.g. { :location => { :title => "" .. } }
+    # @return [Map] created location
+    def create_location(location)
+      Mapper::Location.new(
+        location_resource.create(location)
+      ).mapify
+    end
+
     private
 
     def location_resource

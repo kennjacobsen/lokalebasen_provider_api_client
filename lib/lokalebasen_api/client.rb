@@ -8,7 +8,8 @@ module LokalebasenApi
   class Client
     extend Forwardable
 
-    def_delegators :location_client, :locations, :location, :exists?
+    def_delegators :location_client, :locations, :location, :exists?,
+                                     :create_location
 
     attr_reader :logger, :agent
 
@@ -29,17 +30,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # @param location [Hash] e.g. { :location => { :title => "" .. } }
-    # @return [Map] created location
-    def create_location(location)
-      debug("create_location: #{location.inspect}")
-      locs = locations_res.data
-      rel = add_method(locs.rels[:self], :post)
-      response = rel.post(location)
-      check_response(response)
-      location_res_to_map(response.data.location)
     end
 
     # @return [Map] updated location

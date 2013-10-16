@@ -23,4 +23,13 @@ describe LokalebasenApi::LocationClient do
     LokalebasenApi::LocationClient.new(agent).
       location("ext_key").should == mapped_location
   end
+
+  it "returns a mapped result of the location creation" do
+    LokalebasenApi::Resource::Location.stub_chain(:new, :create)
+    mapped_location = double("MappedLocation")
+    LokalebasenApi::Mapper::Location.stub_chain(:new, :mapify).and_return(mapped_location)
+    location_params = { :location => { :external_key => "external_key "}}
+    LokalebasenApi::LocationClient.new(agent).
+      create_location(location_params).should == mapped_location
+  end
 end

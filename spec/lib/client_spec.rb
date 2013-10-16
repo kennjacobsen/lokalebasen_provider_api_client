@@ -8,8 +8,7 @@ describe LokalebasenApi::Client do
     LokalebasenApi::Client.new(
       {:api_key => "ApiKey"},
       "http://lokalebasen.dev",
-      agent,
-      double("Logger", debug: true)
+      :agent => agent
     )
   }
 

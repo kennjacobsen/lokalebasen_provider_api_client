@@ -36,13 +36,26 @@ module LokalebasenApi
         end
       end
 
+      def deactivate(external_key)
+        set_state_and_return_location(external_key, :deactivation)
+      end
+
       private
+
+      def set_state_and_return_location(external_key, state)
+        relation = location_resource_agent(external_key).rels[state]
+        return unless relation
+        LokalebasenApi::ResponseChecker.check(relation.post) do |response|
+          response.data.location
+        end
+      end
 
       def location_resource_agent(external_key)
         detect_location_from(all, external_key) do |location|
           LokalebasenApi::ResponseChecker.check(location.rels[:self].get) do |response|
             resource = response.data.location
             permit_http_method!(resource.rels[:self], :put)
+            permit_http_method!(resource.rels[:deactivation], :post)
             resource
           end
         end

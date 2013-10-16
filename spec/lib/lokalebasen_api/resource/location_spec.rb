@@ -38,4 +38,12 @@ describe LokalebasenApi::Resource::Location do
       location_resource.find_by_external_key("wrong_ext_key")
     }.to raise_error(LokalebasenApi::NotFoundException)
   end
+
+  it "returns true if a location with given external key exists" do
+    location_resource.exists?("location_ext_key").should be_true
+  end
+
+  it "returns false if a location with given external key exists" do
+    location_resource.exists?("fake_external_key").should be_false
+  end
 end

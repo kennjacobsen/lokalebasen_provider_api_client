@@ -15,6 +15,10 @@ module LokalebasenApi
         location_resource_agent(external_key)
       end
 
+      def exists?(external_key)
+        all.any? {|location| location.external_key == external_key }
+      end
+
       private
 
       def location_resource_agent(external_key)
@@ -38,7 +42,11 @@ module LokalebasenApi
         if location.nil?
           raise LokalebasenApi::NotFoundException.new("Location with external_key '#{external_key}', not found!")
         end
-        yield location if block_given?
+        if block_given?
+          yield location
+        else
+          location
+        end
       end
 
       def get_locations

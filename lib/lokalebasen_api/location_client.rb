@@ -55,6 +55,15 @@ module LokalebasenApi
       ).mapify
     end
 
+    # Activates the specified location
+    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
+    # @return [Map] location
+    def activate(external_key)
+      Mapper::Location.new(
+        location_resource.activate(external_key)
+      ).mapify
+    end
+
     private
 
     def location_resource

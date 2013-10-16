@@ -9,7 +9,7 @@ module LokalebasenApi
     extend Forwardable
 
     def_delegators :location_client, :locations, :location, :exists?,
-                                     :create_location
+                                     :create_location, :update_location
 
     attr_reader :logger, :agent
 
@@ -30,16 +30,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # @return [Map] updated location
-    def update_location(location)
-      debug("update_location: #{location.inspect}")
-      loc_res = location_res(location["location"]["external_key"]).location
-      rel = add_method(loc_res.rels[:self], :put)
-      response = rel.put(location)
-      check_response(response)
-      location_res_to_map(response.data.location)
     end
 
     # Deactivates the specified location

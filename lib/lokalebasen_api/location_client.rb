@@ -39,6 +39,13 @@ module LokalebasenApi
       ).mapify
     end
 
+     # @return [Map] updated location
+    def update_location(location)
+      Mapper::Location.new(
+        location_resource.update(location["location"]["external_key"], location)
+      ).mapify
+    end
+
     private
 
     def location_resource

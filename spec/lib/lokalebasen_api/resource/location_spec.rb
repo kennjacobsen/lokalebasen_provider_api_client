@@ -46,4 +46,19 @@ describe LokalebasenApi::Resource::Location do
   it "returns false if a location with given external key exists" do
     location_resource.exists?("fake_external_key").should be_false
   end
+
+  it "performs the correct requests on creation" do
+    stub_post(faraday_stubs, "/api/provider/locations", 201, location_fixture)
+    params = { :location => { :external_key => "location_ext_key" } }
+    location_resource.create(params)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns a resource with location params on creation" do
+    stub_post(faraday_stubs, "/api/provider/locations", 201, location_fixture)
+    params = { :location => { :external_key => "location_ext_key" } }
+    location = location_resource.create(params)
+    location.to_hash.should include(params[:location])
+    location.should be_an_instance_of(Sawyer::Resource)
+  end
 end

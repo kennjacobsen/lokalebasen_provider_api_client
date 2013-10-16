@@ -1,6 +1,8 @@
 module LokalebasenApi
   module Resource
     class Location
+      include LokalebasenApi::Resource::HTTPMethodPermissioning
+
       attr_reader :root_resource
 
       def initialize(root_resource)
@@ -19,6 +21,14 @@ module LokalebasenApi
         all.any? {|location| location.external_key == external_key }
       end
 
+      def create(location_params)
+        create_response =
+          location_list_resource_agent.rels[:self].post(location_params)
+        LokalebasenApi::ResponseChecker.check(create_response) do |response|
+          response.data.location
+        end
+      end
+
       private
 
       def location_resource_agent(external_key)
@@ -33,6 +43,7 @@ module LokalebasenApi
       def location_list_resource_agent
         LokalebasenApi::ResponseChecker.check(get_locations) do |response|
           resource = response.data
+          permit_http_method!(resource.rels[:self], :post)
           resource
         end
       end

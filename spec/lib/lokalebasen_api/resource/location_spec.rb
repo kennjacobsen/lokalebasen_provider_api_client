@@ -23,4 +23,19 @@ describe LokalebasenApi::Resource::Location do
       location.to_hash.should include(external_key_values[index])
     end
   end
+
+  it "finds a location by the external key" do
+    stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    external_key_params = { :external_key => "location_ext_key" }
+    resource = location_resource.find_by_external_key("location_ext_key")
+    resource.to_hash.should include(external_key_params)
+    resource.should be_an_instance_of(Sawyer::Resource)
+  end
+
+  it "fails with NotFoundException if the no location is found with the given external key" do
+    external_key_params = { :external_key => "location_ext_key" }
+    expect {
+      location_resource.find_by_external_key("wrong_ext_key")
+    }.to raise_error(LokalebasenApi::NotFoundException)
+  end
 end

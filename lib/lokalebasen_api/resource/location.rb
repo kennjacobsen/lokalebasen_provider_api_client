@@ -40,6 +40,10 @@ module LokalebasenApi
         set_state_and_return_location(external_key, :deactivation)
       end
 
+      def activate(external_key)
+        set_state_and_return_location(external_key, :activation)
+      end
+
       private
 
       def set_state_and_return_location(external_key, state)
@@ -56,6 +60,7 @@ module LokalebasenApi
             resource = response.data.location
             permit_http_method!(resource.rels[:self], :put)
             permit_http_method!(resource.rels[:deactivation], :post)
+            permit_http_method!(resource.rels[:activation], :post)
             resource
           end
         end

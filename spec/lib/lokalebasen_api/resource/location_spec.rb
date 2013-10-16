@@ -95,4 +95,21 @@ describe LokalebasenApi::Resource::Location do
     return_value.to_hash.should include(expected_value)
     return_value.should be_an_instance_of(Sawyer::Resource)
   end
+
+  it "performs the correct requests on activation" do
+    stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    stub_post(faraday_stubs, "/api/provider/locations/123/activations", 200, location_fixture)
+    expected_value = { :external_key => "location_ext_key" }
+    location_resource.activate("location_ext_key")
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns a sawyer resource with correct params on activation" do
+    stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
+    stub_post(faraday_stubs, "/api/provider/locations/123/activations", 200, location_fixture)
+    expected_value = { :external_key => "location_ext_key" }
+    return_value = location_resource.activate("location_ext_key")
+    return_value.to_hash.should include(expected_value)
+    return_value.should be_an_instance_of(Sawyer::Resource)
+  end
 end

@@ -46,6 +46,15 @@ module LokalebasenApi
       ).mapify
     end
 
+    # Deactivates the specified location
+    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
+    # @return [Map] location
+    def deactivate(external_key)
+      Mapper::Location.new(
+        location_resource.deactivate(external_key)
+      ).mapify
+    end
+
     private
 
     def location_resource

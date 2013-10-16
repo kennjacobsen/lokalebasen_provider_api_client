@@ -41,4 +41,12 @@ describe LokalebasenApi::LocationClient do
     LokalebasenApi::LocationClient.new(agent).
       update_location(location_params).should == mapped_location
   end
+
+  it "returns a mapped result of the deactivated location" do
+    LokalebasenApi::Resource::Location.stub_chain(:new, :deactivate)
+    mapped_location = double("MappedLocation")
+    LokalebasenApi::Mapper::Location.stub_chain(:new, :mapify).and_return(mapped_location)
+    LokalebasenApi::LocationClient.new(agent).
+      deactivate("external_key").should == mapped_location
+  end
 end

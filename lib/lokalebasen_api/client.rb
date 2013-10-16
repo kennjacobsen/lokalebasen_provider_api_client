@@ -9,7 +9,8 @@ module LokalebasenApi
     extend Forwardable
 
     def_delegators :location_client, :locations, :location, :exists?,
-                                     :create_location, :update_location
+                                     :create_location, :update_location,
+                                     :deactivate
 
     attr_reader :logger, :agent
 
@@ -30,15 +31,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # Deactivates the specified location
-    # @param location_ext_key [String] external_key for location guid e.g. "39PQ32KUC6BSC3AS"
-    # @return [Map] location
-    def deactivate(location_ext_key)
-      debug("deactivate: #{location_ext_key}")
-      response = set_state(:deactivation, location_res(location_ext_key).location) if can_be_deactivated?(location_ext_key)
-      location_res_to_map(response.data.location) if response
     end
 
     # Activates the specified location

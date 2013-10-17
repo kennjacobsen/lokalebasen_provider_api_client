@@ -21,7 +21,7 @@ module LokalebasenApi
 
       def delete(asset_ext_key)
         asset = get_asset_resource(asset_ext_key)
-        LokalebasenApi::ResponseChecker.check(asset.rels[:self].delete)
+        LokalebasenApi::ResponseChecker.check(asset.rels[:self].delete).status
       end
 
       private

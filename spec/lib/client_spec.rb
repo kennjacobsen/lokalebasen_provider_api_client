@@ -141,7 +141,7 @@ describe LokalebasenApi::Client do
         "delete_#{asset_type}",
         "#{resource_name}_external_key1",
         "location_ext_key"
-      ).should == nil
+      ).should == 200
     end
 
     it "fails with NotFoundException if trying to delete asset with wrong external key" do

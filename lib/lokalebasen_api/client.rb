@@ -67,16 +67,6 @@ module LokalebasenApi
         @contact_client ||= LokalebasenApi::ContactClient.new(agent)
       end
 
-      def can_be_activated?(location_ext_key)
-        loc = location_res(location_ext_key).location
-        !loc.rels[:activation].nil?
-      end
-
-      def can_be_deactivated?(location_ext_key)
-        loc = location_res(location_ext_key).location
-        !loc.rels[:deactivation].nil?
-      end
-
       def check_response(response)
         case response.status
           when (400..499) then (fail "Error occured -> #{response.data.message}")
@@ -91,49 +81,6 @@ module LokalebasenApi
         else
           data
         end
-      end
-
-      def location_res(location_ext_key)
-        location = locations_res.data.locations.detect { |location| location.external_key == location_ext_key }
-        raise NotFoundException.new("Location with external_key '#{location_ext_key}', not found!") if location.nil?
-        location.rels[:self].get.data
-      end
-
-      def locations_res
-        root = agent.start
-        check_response(root)
-        locations_rel = root.data.rels[:locations]
-        locations_rel.get
-      end
-
-      def prospectus(prospectus_ext_key, location_ext_key)
-        loc = location_res(location_ext_key)
-        prospectus = loc.location.prospectus if loc.location.respond_to?(:prospectus) && loc.location.prospectus.external_key == prospectus_ext_key
-        if prospectus.nil?
-          raise NotFoundException.new, "Prospectus with external_key "\
-            "'#{prospectus_ext_key}', not found on #{location_ext_key}!"
-        end
-        prospectus
-      end
-
-      def floorplan(floorplan_ext_key, location_ext_key)
-        loc = location_res(location_ext_key)
-        floorplan = loc.location.floor_plans.detect{|floorplan| floorplan.external_key == floorplan_ext_key }
-        if floorplan.nil?
-          raise NotFoundException, "Floorplan with external_key "\
-            "'#{floorplan_ext_key}', not found on #{location_ext_key}!"
-        end
-        floorplan
-      end
-
-      def photo(photo_ext_key, location_ext_key)
-        loc = location_res(location_ext_key)
-        photo = loc.location.photos.detect{|photo| photo.external_key == photo_ext_key }
-        if photo.nil?
-          raise NotFoundException, "Photo with external_key "\
-            "'#{photo_ext_key}', not found on #{location_ext_key}!"
-        end
-        photo
       end
 
       # PATCH: Because Lokalebasen API relations URLs do not include possible REST methods, Sawyer defaults to :get only.
@@ -151,42 +98,6 @@ module LokalebasenApi
           http.headers['Content-Type'] = 'application/json'
           http.headers['Api-Key'] = @api_key
         end
-      end
-
-      def photo_data(photo_ext_key, photo_url)
-        {
-          photo: {
-            external_key: photo_ext_key,
-            url: photo_url
-          }
-        }
-      end
-
-      def floorplan_data(floorplan_ext_key, floorplan_url)
-        {
-          floor_plan: {
-            external_key: floorplan_ext_key,
-            url: floorplan_url
-          }
-        }
-      end
-
-      def prospectus_data(prospectus_ext_key, prospectus_url)
-        {
-          prospectus: {
-            external_key: prospectus_ext_key,
-            url: prospectus_url
-          }
-        }
-      end
-
-      def location_res_to_map(loc_res)
-        res =  Map.new(loc_res)
-        res.floor_plans = res.floor_plans.map{|fp| fp.to_hash} if res.has?(:floor_plans)
-        res.photos = res.photos.map{|p| p.to_hash} if res.has?(:photos)
-        res = Map.new(res.to_hash) # Minor hack
-        res.resource = loc_res
-        res
       end
 
       def service_url

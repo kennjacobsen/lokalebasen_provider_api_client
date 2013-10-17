@@ -62,6 +62,7 @@ module LokalebasenApi
             permit_http_method!(resource.rels[:deactivation], :post)
             permit_http_method!(resource.rels[:activation], :post)
             permit_http_method!(resource.rels[:photos], :post)
+            permit_http_method!(resource.rels[:prospectuses], :post)
             resource
           end
         end

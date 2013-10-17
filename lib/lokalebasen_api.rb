@@ -7,6 +7,7 @@ require "lokalebasen_api/resource/root"
 require "lokalebasen_api/resource/location"
 require "lokalebasen_api/resource/asset"
 require "lokalebasen_api/resource/photo"
+require "lokalebasen_api/resource/prospectus"
 require "lokalebasen_api/mapper/location"
 require "lokalebasen_api/mapper/job"
 

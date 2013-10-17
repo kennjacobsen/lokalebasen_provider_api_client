@@ -8,6 +8,7 @@ require "lokalebasen_api/resource/location"
 require "lokalebasen_api/resource/asset"
 require "lokalebasen_api/resource/photo"
 require "lokalebasen_api/mapper/location"
+require "lokalebasen_api/mapper/job"
 
 module LokalebasenApi
   def self.client(credentials, service_url)

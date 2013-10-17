@@ -114,4 +114,10 @@ describe LokalebasenApi::LocationClient do
       let(:asset_resource_class) { LokalebasenApi::Resource::Photo }
     end
   end
+
+  describe "prospectus" do
+    it_behaves_like "an asset client", :prospectus do
+      let(:asset_resource_class) { LokalebasenApi::Resource::Prospectus }
+    end
+  end
 end

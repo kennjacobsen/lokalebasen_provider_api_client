@@ -80,6 +80,23 @@ module LokalebasenApi
       Resource::Photo.new(location).delete(photo_ext_key)
     end
 
+    # Creates a prospectus create background job on the specified location
+    # @return [Map] created job
+    def create_prospectus(prospectus_url, prospectus_ext_key, location_ext_key)
+      location = location_resource.find_by_external_key(location_ext_key)
+      prospectus = Resource::Prospectus.new(location).create(prospectus_url,
+                                                             prospectus_ext_key)
+      Mapper::Job.new(prospectus).mapify
+    end
+
+    # Deletes specified floorplan
+    # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
+    # @return [void]
+    def delete_prospectus(prospectus_ext_key, location_ext_key)
+      location = location_resource.find_by_external_key(location_ext_key)
+      Resource::Prospectus.new(location).delete(prospectus_ext_key)
+    end
+
     private
 
     def location_resource

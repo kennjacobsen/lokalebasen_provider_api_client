@@ -7,6 +7,7 @@ require_relative 'contact_client'
 module LokalebasenApi
   class Client
     include LokalebasenApi::Resource::HTTPMethodPermissioning
+    include LokalebasenApi::ClientHelper
     extend Forwardable
 
     def_delegators :location_client, :locations, :location, :exists?,
@@ -67,22 +68,6 @@ module LokalebasenApi
 
       def contact_client
         @contact_client ||= LokalebasenApi::ContactClient.new(agent)
-      end
-
-      def check_response(response)
-        case response.status
-          when (400..499) then (fail "Error occured -> #{response.data.message}")
-          when (500..599) then (fail "Server error -> #{error_msg(response)}")
-          else nil
-        end
-      end
-
-      def error_msg(response)
-        if response.data.index("html")
-          "Server returned HTML in error"
-        else
-          data
-        end
       end
 
       def default_agent

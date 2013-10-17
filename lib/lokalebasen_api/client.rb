@@ -6,6 +6,7 @@ require_relative 'contact_client'
 
 module LokalebasenApi
   class Client
+    include LokalebasenApi::Resource::HTTPMethodPermissioning
     extend Forwardable
 
     def_delegators :location_client, :locations, :location, :exists?,
@@ -40,7 +41,7 @@ module LokalebasenApi
     # @return [void]
     def delete_resource(resource)
       rel = resource.rels[:self]
-      add_method(rel, :delete)
+      permit_http_method!(rel, :delete)
       response = rel.delete
       check_response(response)
     end
@@ -51,7 +52,8 @@ module LokalebasenApi
     # @param resource [Sawyer::Resource] the resource to set state on
     # @return [Sawyer::Resource] response
     def set_state(relation_type, resource)
-      relation = add_method(resource.rels[relation_type], :post)
+      relation = resource.rels[relation_type]
+      permit_http_method!(relation, :post)
       response = relation.post
       check_response(response)
       response
@@ -81,16 +83,6 @@ module LokalebasenApi
         else
           data
         end
-      end
-
-      # PATCH: Because Lokalebasen API relations URLs do not include possible REST methods, Sawyer defaults to :get only.
-      # This methods adds a REST method to the relation
-      # @!visibility private
-      # @param method [Symbol] - :put, :post, :delete
-      # @return [Sawyer::Relation] patched relation
-      def add_method(relation, method)
-        relation.instance_variable_get(:@available_methods).add(method)
-        relation
       end
 
       def default_agent

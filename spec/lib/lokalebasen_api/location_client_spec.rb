@@ -120,4 +120,10 @@ describe LokalebasenApi::LocationClient do
       let(:asset_resource_class) { LokalebasenApi::Resource::Prospectus }
     end
   end
+
+  describe "floor plans" do
+    it_behaves_like "an asset client", :floorplan do
+      let(:asset_resource_class) { LokalebasenApi::Resource::FloorPlan }
+    end
+  end
 end

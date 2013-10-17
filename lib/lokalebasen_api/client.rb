@@ -12,7 +12,8 @@ module LokalebasenApi
                                      :create_location, :update_location,
                                      :deactivate, :activate, :create_photo,
                                      :delete_photo, :create_prospectus,
-                                     :delete_prospectus
+                                     :delete_prospectus, :create_floorplan,
+                                     :delete_floorplan
 
     attr_reader :logger, :agent
 
@@ -33,25 +34,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # Creates a floorplan create background job on the specified location
-    # @return [Map] created job
-    def create_floorplan(floorplan_url, floorplan_ext_key, location_ext_key)
-      loc = location_res(location_ext_key).location
-      rel = add_method(loc.rels[:floor_plans], :post)
-      response = rel.post(floorplan_data(floorplan_ext_key, floorplan_url))
-      check_response(response)
-      res = response.data.job.to_hash
-      res[:url] = response.data.job.rels[:self].href_template
-      Map.new(res)
-    end
-
-    # Deletes specified floorplan
-    # @raise [RuntimeError] if Floorplan not found, e.g. "Floorplan with external_key 'FLOORPLAN_EXT_KEY', not found!"
-    # @return [void]
-    def delete_floorplan(floorplan_ext_key, location_ext_key)
-      delete_resource(floorplan(floorplan_ext_key, location_ext_key))
     end
 
     # Deletes specified resource

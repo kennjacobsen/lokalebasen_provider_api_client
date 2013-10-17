@@ -10,7 +10,8 @@ module LokalebasenApi
 
     def_delegators :location_client, :locations, :location, :exists?,
                                      :create_location, :update_location,
-                                     :deactivate, :activate
+                                     :deactivate, :activate, :create_photo,
+                                     :delete_photo
 
     attr_reader :logger, :agent
 
@@ -31,25 +32,6 @@ module LokalebasenApi
     # @return [Array<Map>] all contacts
     def contacts
       contact_client.contacts
-    end
-
-    # Creates a photo create background job on the specified location
-    # @return [Map] created job
-    def create_photo(photo_url, photo_ext_key, location_ext_key)
-      loc = location_res(location_ext_key).location
-      rel = add_method(loc.rels[:photos], :post)
-      response = rel.post(photo_data(photo_ext_key, photo_url))
-      check_response(response)
-      res = response.data.job.to_hash
-      res[:url] = response.data.job.rels[:self].href_template
-      Map.new(res)
-    end
-
-    # Deletes specified photo
-    # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
-    # @return [void]
-    def delete_photo(photo_ext_key, location_ext_key)
-      delete_resource(photo(photo_ext_key, location_ext_key))
     end
 
     # Creates a prospectus create background job on the specified location

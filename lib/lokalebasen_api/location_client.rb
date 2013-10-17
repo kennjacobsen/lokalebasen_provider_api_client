@@ -64,6 +64,22 @@ module LokalebasenApi
       ).mapify
     end
 
+    # Creates a photo create background job on the specified location
+    # @return [Map] created job
+    def create_photo(photo_url, photo_ext_key, location_ext_key)
+      location = location_resource.find_by_external_key(location_ext_key)
+      photo = Resource::Photo.new(location).create(photo_url, photo_ext_key)
+      Mapper::Job.new(photo).mapify
+    end
+
+    # Deletes specified photo
+    # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
+    # @return [void]
+    def delete_photo(photo_ext_key, location_ext_key)
+      location = location_resource.find_by_external_key(location_ext_key)
+      Resource::Photo.new(location).delete(photo_ext_key)
+    end
+
     private
 
     def location_resource

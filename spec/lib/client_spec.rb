@@ -8,8 +8,7 @@ describe LokalebasenApi::Client do
     LokalebasenApi::Client.new(
       {:api_key => "ApiKey"},
       "http://lokalebasen.dev",
-      agent,
-      double("Logger", debug: true)
+      :agent => agent
     )
   }
 
@@ -55,6 +54,7 @@ describe LokalebasenApi::Client do
     stub_post(faraday_stubs, "/api/provider/locations", 201, location_fixture)
     location = { "location" => { "external_key" => "location_ext_key" } }
     client.create_location(location).should include fixture_to_response(location_fixture)
+    faraday_stubs.verify_stubbed_calls
   end
 
   it "fails with RuntimeError if creation fails" do
@@ -70,6 +70,7 @@ describe LokalebasenApi::Client do
     stub_put(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
     location = { "location" => { "external_key" => "location_ext_key" } }
     client.update_location(location).should include fixture_to_response(location_fixture)
+    faraday_stubs.verify_stubbed_calls
   end
 
   it "fails with RuntimeError if location update fails" do
@@ -86,6 +87,7 @@ describe LokalebasenApi::Client do
     stub_post(faraday_stubs, "/api/provider/locations/123/deactivations", 200, location_fixture)
     expected_value = { "external_key" => "location_ext_key" }
     client.deactivate("location_ext_key").should include fixture_to_response(location_fixture)
+    faraday_stubs.verify_stubbed_calls
   end
 
   it "fails with RuntimeError if the location to be deactivated does not exist" do
@@ -100,6 +102,7 @@ describe LokalebasenApi::Client do
     stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
     stub_post(faraday_stubs, "/api/provider/locations/123/activations", 200, location_fixture)
     client.activate("location_ext_key").should include fixture_to_response(location_fixture)
+    faraday_stubs.verify_stubbed_calls
   end
 
   it "fails with RuntimeError if the location to be activated does not exist" do
@@ -120,6 +123,7 @@ describe LokalebasenApi::Client do
         "external_key",
         "location_ext_key"
       ).should include fixture_to_response(asset_job_fixture)
+      faraday_stubs.verify_stubbed_calls
     end
 
     it "fails with RuntimeError if creation of #{asset_type} fails" do
@@ -142,7 +146,8 @@ describe LokalebasenApi::Client do
         "delete_#{asset_type}",
         "#{resource_name}_external_key1",
         "location_ext_key"
-      ).should == nil
+      ).should == 200
+      faraday_stubs.verify_stubbed_calls
     end
 
     it "fails with NotFoundException if trying to delete asset with wrong external key" do

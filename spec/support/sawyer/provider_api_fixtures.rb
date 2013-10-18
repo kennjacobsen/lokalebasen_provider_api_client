@@ -2,7 +2,8 @@ module ProviderApiFixtures
   def root_fixture
     {
       :_links => {
-        :locations => {:href => "/api/provider/locations" }
+        :locations => {:href => "/api/provider/locations" },
+        :contacts => { :href => "/api/provider/contacts" }
       }
     }
   end
@@ -81,6 +82,28 @@ module ProviderApiFixtures
         },
         :state => "enqueued"
       }
+    }
+  end
+
+  def contact_list_fixture
+    {
+      :_links => {
+        :self => { :href => "/api/provider/contacts" }
+      },
+      :contacts => [
+        {
+          :_links => {
+            :self => { :href => "/api/provider/contacts/123"}
+          },
+          :external_key => "contact_ext_key1"
+        },
+        {
+          :_links => {
+            :self => { :href => "/api/provider/contacts/456"}
+          },
+          :external_key => "contact_ext_key2"
+        }
+      ]
     }
   end
 

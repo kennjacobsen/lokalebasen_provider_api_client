@@ -7,6 +7,7 @@ describe LokalebasenApi::Resource::Contact do
   let(:contact_resource) {
     LokalebasenApi::Resource::Contact.new(root_resource)
   }
+  let(:contact_params) { { :external_key => "contact_ext_key1" } }
 
   before :each do
     stub_get(faraday_stubs, "/api/provider", 200, root_fixture)
@@ -22,5 +23,12 @@ describe LokalebasenApi::Resource::Contact do
       contact.should be_an_instance_of(Sawyer::Resource)
       contact.to_hash.should include(external_key_values[index])
     end
+  end
+
+  it "finds a contact by the external key" do
+    stub_get(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    resource = contact_resource.find_by_external_key("contact_ext_key1")
+    resource.to_hash.should include(contact_params)
+    resource.should be_an_instance_of(Sawyer::Resource)
   end
 end

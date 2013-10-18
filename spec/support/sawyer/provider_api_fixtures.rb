@@ -107,6 +107,22 @@ module ProviderApiFixtures
     }
   end
 
+  def contact_fixture
+    {
+      :contact => {
+        :_links => {
+            :self => {
+                :href => "http://lokalebasen.dev/api/provider/contacts/123"
+            }
+        },
+        :name => "Sven Sved",
+        :email => "svensved@egendomsmaegler.dk",
+        :phone_number => "34437799",
+        :external_key => "contact_ext_key1"
+    }
+}
+  end
+
   def error_fixture(message = "Error Message")
     { :message => message }
   end

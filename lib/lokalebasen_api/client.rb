@@ -17,6 +17,9 @@ module LokalebasenApi
                                      :delete_prospectus, :create_floorplan,
                                      :delete_floorplan
 
+
+    def_delegators :contact_client, :contacts, :find_contact_by_external_key
+
     attr_reader :logger, :agent
 
     # @param credentials [Hash] e.g. { :api_key => "03e7ad6c157dcfd1195144623d06ad0d2498e9ec" }
@@ -30,12 +33,6 @@ module LokalebasenApi
 
       raise "api_key required" if @api_key.nil?
       raise "service_url required" if @service_url.nil?
-    end
-
-    # Returns all contacts for the current provider
-    # @return [Array<Map>] all contacts
-    def contacts
-      contact_client.contacts
     end
 
     # Deletes specified resource

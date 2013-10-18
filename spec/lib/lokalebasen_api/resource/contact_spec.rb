@@ -31,4 +31,17 @@ describe LokalebasenApi::Resource::Contact do
     resource.to_hash.should include(contact_params)
     resource.should be_an_instance_of(Sawyer::Resource)
   end
+
+  it "performs the correct requests on creation" do
+    stub_post(faraday_stubs, "/api/provider/contacts", 201, contact_fixture)
+    contact_resource.create(contact_params)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns a resource with location params on creation" do
+    stub_post(faraday_stubs, "/api/provider/contacts", 201, contact_fixture)
+    contact = contact_resource.create(contact_params)
+    contact.to_hash.should include(contact_params)
+    contact.should be_an_instance_of(Sawyer::Resource)
+  end
 end

@@ -1,6 +1,8 @@
 module LokalebasenApi
   module Resource
     class Contact
+      include LokalebasenApi::Resource::HTTPMethodPermissioning
+
       attr_reader :root_resource
 
       def initialize(root_resource)
@@ -15,6 +17,14 @@ module LokalebasenApi
         contact_resource_agent_by_external_key(external_key)
       end
 
+      def create(contact_params)
+        create_response =
+          contact_list_resource_agent.rels[:self].post(contact_params)
+        LokalebasenApi::ResponseChecker.check(create_response) do |response|
+          response.data.contact
+        end
+      end
+
       private
 
       def contact_resource_agent_by_external_key(external_key)
@@ -27,7 +37,9 @@ module LokalebasenApi
 
       def contact_list_resource_agent
         LokalebasenApi::ResponseChecker.check(get_contacts) do |response|
-          response.data
+          resource = response.data
+          permit_http_method!(resource.rels[:self], :post)
+          resource
         end
       end
 

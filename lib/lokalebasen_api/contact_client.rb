@@ -32,6 +32,12 @@ module LokalebasenApi
       ).mapify
     end
 
+    def create_contact(contact_params)
+      Mapper::Contact.new(
+        contact_resource.create(contact_params)
+      ).mapify
+    end
+
     private
 
       def contact_resource

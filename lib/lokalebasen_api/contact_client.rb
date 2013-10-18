@@ -16,7 +16,9 @@ module LokalebasenApi
     # Returns all contacts for the current provider
     # @return [Array<Map>] all contacts
     def contacts
-      contacts_res.data.contacts.map {|contact| contact_res_to_map(contact)}
+      contact_resource.all.map do |contact|
+        Mapper::Contact.new(contact).mapify
+      end
     end
 
     def contact(contact_ext_key)
@@ -24,8 +26,8 @@ module LokalebasenApi
       contact_res_to_map(con.contact)
     end
 
-    def contact_by_resource(contact_resource)
-      contact_resource.rels[:self].get.data.contact
+    def contact_by_resource(resource)
+      resource.rels[:self].get.data.contact
     end
 
     def contact_res(contact_ext_key)
@@ -35,6 +37,14 @@ module LokalebasenApi
     end
 
     private
+
+      def contact_resource
+        Resource::Contact.new(root_resource)
+      end
+
+      def root_resource
+        Resource::Root.new(agent).get
+      end
 
       def contact_res_to_map(contact_res)
         res =  Map.new(contact_res)

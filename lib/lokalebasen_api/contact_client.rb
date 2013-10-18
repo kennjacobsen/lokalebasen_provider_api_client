@@ -32,16 +32,6 @@ module LokalebasenApi
       ).mapify
     end
 
-    def contact_by_resource(resource)
-      resource.rels[:self].get.data.contact
-    end
-
-    def contact_res(contact_ext_key)
-      contact = contacts_res.data.contacts.detect { |contact| contact.external_key == contact_ext_key }
-      raise NotFoundException.new("Contact with external_key '#{contact_ext_key}', not found!") if contact.nil?
-      contact.rels[:self].get.data
-    end
-
     private
 
       def contact_resource
@@ -51,20 +41,5 @@ module LokalebasenApi
       def root_resource
         Resource::Root.new(agent).get
       end
-
-      def contact_res_to_map(contact_res)
-        res =  Map.new(contact_res)
-        res = Map.new(res.to_hash) # Minor hack
-        res.resource = contact_res
-        res
-      end
-
-      def contacts_res
-        root = @agent.start
-        check_response(root)
-        contacts_rel = root.data.rels[:contacts]
-        contacts_rel.get
-      end
-
   end
 end

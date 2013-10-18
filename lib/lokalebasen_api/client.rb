@@ -18,7 +18,7 @@ module LokalebasenApi
                                      :delete_floorplan
 
 
-    def_delegators :contact_client, :contacts
+    def_delegators :contact_client, :contacts, :find_contact_by_external_key
 
     attr_reader :logger, :agent
 

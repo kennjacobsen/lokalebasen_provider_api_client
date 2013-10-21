@@ -44,4 +44,23 @@ describe LokalebasenApi::Resource::Contact do
     contact.to_hash.should include(contact_params)
     contact.should be_an_instance_of(Sawyer::Resource)
   end
+
+  it "updates a contact by a resource" do
+    stub_get(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    stub_put(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    resource = contact_resource.all.first
+    contact_params = { :contact => { :external_key => "new_external_key" }}
+    contact_resource.update_by_resource(resource, contact_params)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns a resource of the updated contact" do
+    stub_get(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    stub_put(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    resource = contact_resource.all.first
+    params = { :contact => contact_params }
+    contact = contact_resource.update_by_resource(resource, contact_params)
+    contact.to_hash.should include(contact_params)
+    contact.should be_an_instance_of(Sawyer::Resource)
+  end
 end

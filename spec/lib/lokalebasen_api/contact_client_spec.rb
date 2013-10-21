@@ -41,5 +41,26 @@ module LokalebasenApi
       Mapper::Contact.stub_chain(:new, :mapify).and_return(mapped_contact)
       ContactClient.new(agent).create_contact("ext_key").should == mapped_contact
     end
+
+    it "updates a contact" do
+      input_resource = double("Resource")
+      contact_resource = double("ContactResource")
+      Resource::Contact.stub(:new).and_return(contact_resource)
+      contact_params = { :external_key => "ext_key" }
+      contact_resource.should_receive(:update_by_resource).with(input_resource, contact_params)
+      Mapper::Contact.stub_chain(:new, :mapify)
+      ContactClient.new(agent).update_contact_by_resource(input_resource, contact_params)
+    end
+
+    it "returns a mapped contact of the respone from contact update" do
+      input_resource = double("Resource")
+      contact_params = { :external_key => "ext_key" }
+      params = { :contact => contact_params }
+      Resource::Contact.stub_chain(:new, :update_by_resource)
+      mapped_contact = double("MappedContact")
+      Mapper::Contact.stub_chain(:new, :mapify).and_return(mapped_contact)
+      ContactClient.new(agent).update_contact_by_resource(input_resource, params).
+        should == mapped_contact
+    end
   end
 end

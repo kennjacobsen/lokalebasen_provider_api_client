@@ -15,7 +15,7 @@ module LokalebasenApi
                                      :deactivate, :activate, :create_photo,
                                      :delete_photo, :create_prospectus,
                                      :delete_prospectus, :create_floorplan,
-                                     :delete_floorplan
+                                     :delete_floorplan, :create_subscription
 
 
     def_delegators :contact_client, :contacts, :find_contact_by_external_key,

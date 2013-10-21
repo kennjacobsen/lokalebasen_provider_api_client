@@ -25,13 +25,27 @@ module LokalebasenApi
         end
       end
 
+      def update_by_resource(resource, contact_params)
+        update_response =
+          contact_resource_agent_by_resource(resource).rels[:self].put(contact_params)
+        LokalebasenApi::ResponseChecker.check(update_response) do |response|
+          response.data.contact
+        end
+      end
+
       private
 
       def contact_resource_agent_by_external_key(external_key)
         find_contact_from_contact_list(external_key) do |contact|
-          LokalebasenApi::ResponseChecker.check(contact.rels[:self].get) do |response|
-            response.data.contact
-          end
+          contact_resource_agent_by_resource(contact)
+        end
+      end
+
+      def contact_resource_agent_by_resource(resource)
+        LokalebasenApi::ResponseChecker.check(resource.rels[:self].get) do |response|
+          contact_resource = response.data.contact
+          permit_http_method!(contact_resource.rels[:self], :put)
+          contact_resource
         end
       end
 

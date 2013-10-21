@@ -19,7 +19,7 @@ module LokalebasenApi
 
 
     def_delegators :contact_client, :contacts, :find_contact_by_external_key,
-                                    :create_contact
+                                    :create_contact, :update_contact_by_resource
 
     attr_reader :logger, :agent
 

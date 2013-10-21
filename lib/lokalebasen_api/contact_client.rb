@@ -38,6 +38,12 @@ module LokalebasenApi
       ).mapify
     end
 
+    def update_contact_by_resource(resource, contact_params)
+      Mapper::Contact.new(
+        contact_resource.update_by_resource(resource, contact_params)
+      ).mapify
+    end
+
     private
 
       def contact_resource

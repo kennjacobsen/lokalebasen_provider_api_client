@@ -17,7 +17,8 @@ module ProviderApiFixtures
           :deactivation => { :href => "/api/provider/locations/123/deactivations"},
           :photos => { :href => "/api/provider/locations/123/photos" },
           :prospectuses => { :href => "/api/provider/locations/123/prospectuses" },
-          :floor_plans => { :href => "/api/provider/locations/123/floor_plans" }
+          :floor_plans => { :href => "/api/provider/locations/123/floor_plans" },
+          :subscriptions => { :href => "/api/provider/locations/123/subscriptions" }
         },
         :external_key => "location_ext_key",
         :photos => [
@@ -119,8 +120,61 @@ module ProviderApiFixtures
         :email => "svensved@egendomsmaegler.dk",
         :phone_number => "34437799",
         :external_key => "contact_ext_key1"
+      }
     }
-}
+  end
+
+  def subscription_list_fixture
+    {
+      :_links => {
+        :self => {
+          :href => "/api/provider/locations/123/subscriptions"
+        },
+      },
+      :subscriptions => [
+        {
+          :_links => {
+            :self => {
+              :href => "/api/provider/subscriptions/123"
+            },
+            :contact => {
+              :href => "/api/provider/contacts/123"
+            }
+          },
+          :contact => "/api/provider/contacts/123"
+        },
+        {
+          :_links => {
+            :self => {
+              :href => "/api/provider/subscriptions/456"
+            },
+            :contact => {
+              :href => "/api/provider/contacts/456"
+            }
+          },
+          :contact => "/api/provider/contacts/456"
+        }
+      ]
+    }
+  end
+
+  def subscription_fixture
+    {
+      :subscription => {
+        :_links => {
+          :self => {
+            :href => "/api/provider/subscriptions/123"
+          },
+          :contact => {
+            :href => "/api/provider/contacts/123"
+          },
+          :location => {
+            :href => "/api/provider/locations/123"
+          }
+        },
+        :contact => "/api/provider/contacts/123"
+      }
+    }
   end
 
   def error_fixture(message = "Error Message")

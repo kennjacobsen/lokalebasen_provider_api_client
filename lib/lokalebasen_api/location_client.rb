@@ -114,12 +114,6 @@ module LokalebasenApi
       Resource::FloorPlan.new(location).delete(floor_plan_ext_key)
     end
 
-    def create_subscription(location_resource, contact_resource)
-      subscription_params = { :contact => contact_resource.rels[:self].href }
-      Resource::Subscription.new(location_resource).
-        create(subscription_params)
-    end
-
     private
 
     def location_resource

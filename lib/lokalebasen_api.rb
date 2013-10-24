@@ -16,6 +16,7 @@ require "lokalebasen_api/client_helper"
 require "lokalebasen_api/client"
 require "lokalebasen_api/response_checker"
 require "lokalebasen_api/location_client"
+require "lokalebasen_api/subscription_client"
 
 module LokalebasenApi
   def self.client(credentials, service_url)

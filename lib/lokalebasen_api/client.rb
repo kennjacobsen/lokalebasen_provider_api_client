@@ -21,7 +21,8 @@ module LokalebasenApi
     def_delegators :contact_client, :contacts, :find_contact_by_external_key,
                                     :create_contact, :update_contact_by_resource
 
-    def_delegators :subscription_client, :create_subscription
+    def_delegators :subscription_client, :create_subscription,
+                                         :subscriptions_for_location
 
     attr_reader :logger, :agent
 

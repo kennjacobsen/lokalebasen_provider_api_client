@@ -11,6 +11,18 @@ describe LokalebasenApi::SubscriptionClient do
   }
   let(:subscription_resource) { double("SubscriptionResource") }
 
+  it "returns a list of mapified subscriptions for the given location" do
+    subscriptions = [double("Subscription")]
+    LokalebasenApi::Resource::Subscription.stub_chain(:new, :all).
+      and_return(subscriptions)
+    mapped_subscription = double("MappedSubscription")
+    LokalebasenApi::Mapper::Subscription.stub_chain(:new, :mapify).
+      and_return(mapped_subscription)
+    LokalebasenApi::SubscriptionClient.new.
+      subscriptions_for_location(location_resource).
+      should =~ [mapped_subscription]
+  end
+
   it "creates a sugsbscription by a given location resource and contact resource" do
     LokalebasenApi::Resource::Subscription.stub(:new).and_return(subscription_resource)
     subscription_params = { :contact => "http://www.contact.dk/1" }

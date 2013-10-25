@@ -15,11 +15,15 @@ module LokalebasenApi
                                      :deactivate, :activate, :create_photo,
                                      :delete_photo, :create_prospectus,
                                      :delete_prospectus, :create_floorplan,
-                                     :delete_floorplan, :create_subscription
+                                     :delete_floorplan
 
 
     def_delegators :contact_client, :contacts, :find_contact_by_external_key,
                                     :create_contact, :update_contact_by_resource
+
+    def_delegators :subscription_client, :create_subscription,
+                                         :subscriptions_for_location,
+                                         :delete_subscription
 
     attr_reader :logger, :agent
 
@@ -59,6 +63,10 @@ module LokalebasenApi
     end
 
     private
+
+      def subscription_client
+        LokalebasenApi::SubscriptionClient.new
+      end
 
       def location_client
         LokalebasenApi::LocationClient.new(agent)

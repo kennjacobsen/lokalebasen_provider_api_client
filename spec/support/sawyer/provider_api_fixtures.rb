@@ -141,7 +141,7 @@ module ProviderApiFixtures
               :href => "/api/provider/contacts/123"
             }
           },
-          :contact => "/api/provider/contacts/123"
+          :contact => "http://www.lokalebasen.dk/api/provider/contacts/123"
         },
         {
           :_links => {
@@ -152,7 +152,7 @@ module ProviderApiFixtures
               :href => "/api/provider/contacts/456"
             }
           },
-          :contact => "/api/provider/contacts/456"
+          :contact => "http://www.lokalebasen.dk/api/provider/contacts/456"
         }
       ]
     }

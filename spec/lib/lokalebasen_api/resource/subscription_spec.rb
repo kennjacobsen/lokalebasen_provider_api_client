@@ -18,6 +18,18 @@ describe LokalebasenApi::Resource::Location do
     stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
   end
 
+  it "returns all subscriptions" do
+    stub_get(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_list_fixture)
+    subscription_values = [
+      { :contact => "http://www.lokalebasen.dk/api/provider/contacts/123" },
+      { :contact => "http://www.lokalebasen.dk/api/provider/contacts/456" },
+    ]
+    subscription_resource.all.each_with_index do |location, index|
+      location.should be_an_instance_of(Sawyer::Resource)
+      location.to_hash.should include(subscription_values[index])
+    end
+  end
+
   it "performs the correct requests when creating a subscription" do
     stub_post(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_fixture)
     params = { :contact => "/api/provider/contacts/123" }
@@ -31,5 +43,20 @@ describe LokalebasenApi::Resource::Location do
     subscription = subscription_resource.create(params)
     subscription.should be_an_instance_of(Sawyer::Resource)
     subscription.to_hash.should include params
+  end
+
+  it "performs the correct requests when deleting a subscription" do
+    stub_get(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_list_fixture)
+    stub_delete(faraday_stubs, "/api/provider/subscriptions/123", 204, {})
+    first_subscription = subscription_resource.all.first
+    subscription_resource.delete(first_subscription)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns the status code for the delete response" do
+    stub_get(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_list_fixture)
+    stub_delete(faraday_stubs, "/api/provider/subscriptions/123", 204, {})
+    first_subscription = subscription_resource.all.first
+    subscription_resource.delete(first_subscription).should == 204
   end
 end

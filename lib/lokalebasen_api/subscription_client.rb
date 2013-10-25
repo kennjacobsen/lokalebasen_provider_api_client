@@ -6,6 +6,10 @@ module LokalebasenApi
       end
     end
 
+    def delete_subscription(subscription_resource)
+      Resource::Subscription.new(nil).delete(subscription_resource)
+    end
+
     def create_subscription(location_resource, contact_resource)
       subscription_params = { :contact => contact_resource.rels[:self].href }
       Mapper::Subscription.new(

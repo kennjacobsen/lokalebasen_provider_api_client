@@ -1,6 +1,7 @@
 module LokalebasenApi
   module Resource
     class Subscription
+      include LokalebasenApi::Resource::HTTPMethodPermissioning
       attr_reader :location_resource
 
       def initialize(location_resource)
@@ -17,6 +18,11 @@ module LokalebasenApi
         LokalebasenApi::ResponseChecker.check(create_response) do |response|
           response.data.subscription
         end
+      end
+
+      def delete(subscription_resource)
+        permit_http_method!(subscription_resource.rels[:self], :delete)
+        LokalebasenApi::ResponseChecker.check(subscription_resource.rels[:self].delete).status
       end
 
       private

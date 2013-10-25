@@ -44,4 +44,19 @@ describe LokalebasenApi::Resource::Location do
     subscription.should be_an_instance_of(Sawyer::Resource)
     subscription.to_hash.should include params
   end
+
+  it "performs the correct requests when deleting a subscription" do
+    stub_get(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_list_fixture)
+    stub_delete(faraday_stubs, "/api/provider/subscriptions/123", 204, {})
+    first_subscription = subscription_resource.all.first
+    subscription_resource.delete(first_subscription)
+    faraday_stubs.verify_stubbed_calls
+  end
+
+  it "returns the status code for the delete response" do
+    stub_get(faraday_stubs, "/api/provider/locations/123/subscriptions", 200, subscription_list_fixture)
+    stub_delete(faraday_stubs, "/api/provider/subscriptions/123", 204, {})
+    first_subscription = subscription_resource.all.first
+    subscription_resource.delete(first_subscription).should == 204
+  end
 end

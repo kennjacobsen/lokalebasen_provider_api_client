@@ -41,4 +41,11 @@ describe LokalebasenApi::SubscriptionClient do
       create_subscription(location_resource, contact_resource).
       should == mapped_subscription
   end
+
+  it "deletes a subscription by the resource" do
+    subscription = double("Subscription")
+    LokalebasenApi::Resource::Subscription.stub(:new).and_return(subscription_resource)
+    subscription_resource.should_receive(:delete).with(subscription)
+    LokalebasenApi::SubscriptionClient.new.delete_subscription(subscription)
+  end
 end

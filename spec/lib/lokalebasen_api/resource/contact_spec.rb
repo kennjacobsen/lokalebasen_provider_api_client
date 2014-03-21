@@ -32,6 +32,19 @@ describe LokalebasenApi::Resource::Contact do
     resource.should be_an_instance_of(Sawyer::Resource)
   end
 
+  it "finds contact_resource with email" do
+    stub_get(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    stub_get(faraday_stubs, "/api/provider/contacts/456", 200, contact_456_fixture)
+    resource = contact_resource.find_by_email("nis@ejendomsmaegler.dk")
+    resource.rels[:self].get.data.contact.email.should eq("nis@ejendomsmaegler.dk")
+  end
+
+  it "returns nil when no contact_resource with email" do
+    stub_get(faraday_stubs, "/api/provider/contacts/123", 200, contact_fixture)
+    stub_get(faraday_stubs, "/api/provider/contacts/456", 200, contact_456_fixture)
+    contact_resource.find_by_email("unknown@ejendomsmaegler.dk").should be_nil
+  end
+
   it "performs the correct requests on creation" do
     stub_post(faraday_stubs, "/api/provider/contacts", 201, contact_fixture)
     contact_resource.create(contact_params)

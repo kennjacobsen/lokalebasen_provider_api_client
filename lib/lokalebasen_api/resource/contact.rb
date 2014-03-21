@@ -17,6 +17,12 @@ module LokalebasenApi
         contact_resource_agent_by_external_key(external_key)
       end
 
+      def find_by_email(email)
+        all.detect do |contact|
+          contact.rels[:self].get.data.contact.email == email
+        end
+      end
+
       def create(contact_params)
         create_response =
           contact_list_resource_agent.rels[:self].post(contact_params)

@@ -124,6 +124,22 @@ module ProviderApiFixtures
     }
   end
 
+  def contact_456_fixture
+    {
+      :contact => {
+        :_links => {
+            :self => {
+                :href => "http://lokalebasen.dev/api/provider/contacts/456"
+            }
+        },
+        :name => "Nis Hansen",
+        :email => "nis@ejendomsmaegler.dk",
+        :phone_number => "34437799",
+        :external_key => "contact_ext_key89"
+      }
+    }
+  end
+
   def subscription_list_fixture
     {
       :_links => {

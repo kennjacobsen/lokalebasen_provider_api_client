@@ -11,8 +11,8 @@ module LokalebasenApi
         @association_proxy = association_proxy
       end
 
-      def create(photo_url, asset_ext_key)
-        data = asset_data(asset_ext_key, photo_url)
+      def create(photo_url, asset_ext_key, position=nil)
+        data = asset_data(asset_ext_key, photo_url, position)
         post_response = location_resource.rels[resource_name].post(data)
         LokalebasenApi::ResponseChecker.check(post_response) do |response|
           response.data.job
@@ -52,11 +52,12 @@ module LokalebasenApi
           !location_resource.send(association_proxy).nil?
       end
 
-      def asset_data(asset_ext_key, photo_url)
+      def asset_data(asset_ext_key, photo_url, position)
         {
           asset_data_key => {
             external_key: asset_ext_key,
-            url: photo_url
+            url: photo_url,
+            position: position
           }
         }
       end

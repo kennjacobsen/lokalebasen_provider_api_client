@@ -27,14 +27,15 @@ shared_examples "an asset" do |resource_name, asset_data_key|
     params = {
       asset_data_key => {
         :external_key => asset_external_key,
-        :url => asset_url
+        :url => asset_url,
+        :position => 1
       }
     }
     location_resource.rels[resource_name].
       should_receive(:post).
       with(params).
       and_return(double.as_null_object)
-    asset_resource.public_send(:create, asset_url, asset_external_key)
+    asset_resource.public_send(:create, asset_url, asset_external_key, 1)
   end
 
   it "returns a sawyer resource on creation" do

@@ -44,7 +44,9 @@ module LokalebasenApi
 
       def assets
         return [] unless location_has_assets?
-        Array(location_resource.send(association_proxy))
+        result = location_resource.send(association_proxy)
+        result = Array[result] unless result.kind_of?(Array)
+        result
       end
 
       def location_has_assets?

@@ -42,12 +42,12 @@ describe LokalebasenApi::Client do
 
   it "returns true if a location with given external key exists" do
     stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
-    client.exists?("location_ext_key").should be_true
+    expect(client.exists?("location_ext_key")).to be true
   end
 
   it "returns true if a location with given external key exists" do
     stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
-    client.exists?("fake_external_key").should be_false
+    expect(client.exists?("fake_external_key")).to be false
   end
 
   it "creates a location" do
@@ -142,11 +142,13 @@ describe LokalebasenApi::Client do
     it "deletes a #{asset_type}" do
       stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
       stub_delete(faraday_stubs, "/api/provider/#{resource_name}/1", 200, location_fixture)
-      client.public_send(
-        "delete_#{asset_type}",
-        "#{resource_name}_external_key1",
-        "location_ext_key"
-      ).should == 200
+      expect(
+        client.public_send(
+          "delete_#{asset_type}",
+          "#{resource_name}_external_key1",
+          "location_ext_key"
+        )
+      ).to be 200
       faraday_stubs.verify_stubbed_calls
     end
 

@@ -40,11 +40,11 @@ describe LokalebasenApi::Resource::Location do
   end
 
   it "returns true if a location with given external key exists" do
-    location_resource.exists?("location_ext_key").should be_true
+    expect(location_resource.exists?("location_ext_key")).to be true
   end
 
   it "returns false if a location with given external key exists" do
-    location_resource.exists?("fake_external_key").should be_false
+    expect(location_resource.exists?("fake_external_key")).to be false
   end
 
   it "performs the correct requests on creation" do

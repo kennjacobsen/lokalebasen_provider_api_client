@@ -45,7 +45,7 @@ describe LokalebasenApi::Client do
     expect(client.exists?("location_ext_key")).to be true
   end
 
-  it "returns true if a location with given external key exists" do
+  it "returns false if a location with given external key does not exist" do
     stub_get(faraday_stubs, "/api/provider/locations/123", 200, location_fixture)
     expect(client.exists?("fake_external_key")).to be false
   end

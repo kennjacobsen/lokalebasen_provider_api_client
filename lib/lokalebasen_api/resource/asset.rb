@@ -19,6 +19,12 @@ module LokalebasenApi
         end
       end
 
+      def update(asset_ext_key, position)
+        data = asset_update_data(position)
+        asset = get_asset_resource(asset_ext_key)
+        LokalebasenApi::ResponseChecker.check(asset.rels[:self].put(data)).status
+      end
+
       def delete(asset_ext_key)
         asset = get_asset_resource(asset_ext_key)
         LokalebasenApi::ResponseChecker.check(asset.rels[:self].delete).status
@@ -29,6 +35,7 @@ module LokalebasenApi
       def get_asset_resource(asset_ext_key)
         find_asset(asset_ext_key) do |asset|
           permit_http_method!(asset.rels[:self], :delete)
+          permit_http_method!(asset.rels[:self], :put)
           asset
         end
       end
@@ -59,6 +66,14 @@ module LokalebasenApi
           asset_data_key => {
             external_key: asset_ext_key,
             url: photo_url,
+            position: position
+          }
+        }
+      end
+
+      def asset_update_data(position)
+        {
+          asset_data_key => {
             position: position
           }
         }

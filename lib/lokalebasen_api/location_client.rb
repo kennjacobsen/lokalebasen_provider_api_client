@@ -72,6 +72,11 @@ module LokalebasenApi
       Mapper::Job.new(photo).mapify
     end
 
+    def update_photo(location_ext_key, photo_ext_key, position)
+      location = location_resource.find_by_external_key(location_ext_key)
+      Resource::Photo.new(location).update(photo_ext_key, position)
+    end
+
     # Deletes specified photo
     # @raise [RuntimeError] if Photo not found, e.g. "Photo with external_key 'PHOTO_EXT_KEY', not found!"
     # @return [void]

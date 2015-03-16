@@ -13,6 +13,7 @@ module LokalebasenApi
     def_delegators :location_client, :locations, :location, :exists?,
                                      :create_location, :update_location,
                                      :deactivate, :activate, :create_photo,
+                                     :update_photo,
                                      :delete_photo, :create_prospectus,
                                      :delete_prospectus, :create_floorplan,
                                      :delete_floorplan
